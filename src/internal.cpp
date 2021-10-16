@@ -1,8 +1,8 @@
 #include "Internal.h"
 
 #include <cstddef>
-#include <cstdio>
 #include <gltxt/mesh.h>
+#include <gltxt/font.h>
 #include "gl.h"
 
 namespace gltxt
@@ -19,12 +19,12 @@ namespace gltxt
         glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &logLength);
         if (!status)
         {
-            fprintf(stderr, "gltxtError: failed to compile shader: %s!\n", msg);
+            GLTXT_LOG_ERR(msg);
             if (logLength > 1)
             {
                 char* buffer = new char[logLength + 1];
                 glGetShaderInfoLog(handle, logLength, NULL, (GLchar*)buffer);
-                fprintf(stderr, "gltxtError: OPENGL_LOG: %s!\n", buffer);
+                GLTXT_LOG_ERR(buffer);
                 delete[] buffer;
             }
         }
@@ -42,7 +42,7 @@ namespace gltxt
             {
                 char* buffer = new char[logLength + 1];
                 glGetProgramInfoLog(handle, logLength, NULL, (GLchar*)buffer);
-                fprintf(stderr, "gltxtError: OPENGL_LOG: %s!\n", buffer);
+                GLTXT_LOG_ERR(buffer);
                 delete[] buffer;
             }
         }
@@ -155,25 +155,24 @@ namespace gltxt
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void Internal::_renderMesh(const Mesh& mesh, const float* modelMat)
+    void Internal::_render(const Mesh* mesh, const Font* font, const float* modelMat)
     {
         GLenum last_blend_src_rgb; glGetIntegerv(GL_BLEND_SRC_RGB, (GLint*)&last_blend_src_rgb);
         GLenum last_blend_dst_rgb; glGetIntegerv(GL_BLEND_DST_RGB, (GLint*)&last_blend_dst_rgb);
         GLenum last_blend_src_alpha; glGetIntegerv(GL_BLEND_SRC_ALPHA, (GLint*)&last_blend_src_alpha);
         GLenum last_blend_dst_alpha; glGetIntegerv(GL_BLEND_DST_ALPHA, (GLint*)&last_blend_dst_alpha);
-        GLenum last_blend_equation_rgb; glGetIntegerv(GL_BLEND_EQUATION_RGB, (GLint*)&last_blend_equation_rgb);
-        GLenum last_blend_equation_alpha; glGetIntegerv(GL_BLEND_EQUATION_ALPHA, (GLint*)&last_blend_equation_alpha);
         GLboolean last_blend = glIsEnabled(GL_BLEND);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        glBindTexture(GL_TEXTURE_2D, font->mTexHandle);
         glUniformMatrix4fv(_ModelLoc, 1, false, modelMat);
 
-        glBindVertexArray(mesh.mVertexArray);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.mVertexBuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.mElementBuffer);
-        glDrawElements(GL_TRIANGLES, mesh.mNumIndices, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(mesh->mVertexArray);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->mVertexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->mElementBuffer);
+        glDrawElements(GL_TRIANGLES, mesh->mNumIndices, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

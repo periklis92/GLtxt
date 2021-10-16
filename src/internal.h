@@ -1,10 +1,14 @@
 #pragma once
 
 #include <vector>
+#include <cstdio>
+
+#define GLTXT_LOG_ERR(msg) fprintf(stderr, "gltxtError: %s!\n", msg)
 
 namespace gltxt
 {
     class Mesh;
+    class Font;
     struct Vertex;
 
     struct Internal
@@ -14,10 +18,10 @@ namespace gltxt
         static unsigned int _loadFontTexture(unsigned char* data, int width, int height);
         static void _prepareRender(const float* viewProjMat);
         static void _initMeshFromVertices(Mesh& mesh, const Vertex* vertices, int numVertices, const unsigned int* indices, int numIndices);
-        static void _renderMesh(const Mesh& mesh, const float* modelMat);
+        static void _render(const Mesh* mesh, const Font* font, const float* modelMat);
         
         Internal() = delete;
 
-        
+
     };    
 }
