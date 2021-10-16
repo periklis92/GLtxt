@@ -3,9 +3,8 @@
 
 namespace gltxt
 {
-    Label::Label(const char* txt, const Font* font, const Mesh* mesh,const float pixelSize[2])
+    Label::Label(const Font* font, const Mesh* mesh,const float pixelSize[2])
     {
-        mTxt = txt;
         mFont = font;
         mMesh = mesh;
         memset(&mModel[0][0], 0, 16 * sizeof(float));
@@ -14,6 +13,6 @@ namespace gltxt
 
     void Label::Render()
     {
-        Internal::_renderMesh(*mMesh, &mModel[0][0]);
+        Internal::_render(mMesh, mFont, &mModel[0][0]);
     }
 }
