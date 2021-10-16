@@ -2,7 +2,7 @@
 
 #include <gltxt/font.h>
 #include <gltxt/mesh.h>
-#include <cstring>
+#include <string.h>
 
 namespace gltxt
 {

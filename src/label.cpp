@@ -1,4 +1,5 @@
 #include <gltxt/label.h>
+#include <string.h>
 #include "internal.h"
 
 namespace gltxt

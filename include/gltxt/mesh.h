@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 namespace gltxt
 {
     struct Vertex
@@ -13,13 +10,10 @@ namespace gltxt
 
     class Mesh
     {
-    public:
-        void InitFromVertices(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
-
     private:
         unsigned int mVertexArray{0}, mVertexBuffer{0}, mElementBuffer{0};
         int mNumIndices{0};
-        
+
         friend struct Internal;
     };
 }

@@ -1,13 +1,5 @@
-#include <cstddef>
-#include <cstdio>
-#include <cstring>
-#include <algorithm>
-#include <unordered_map>
-#include <iostream>
 #include <fstream>
-#include <functional>
-#include <string>
-
+#include <unordered_map>
 #include <gltxt/gltxt.h>
 
 #include "gl.h"
@@ -20,7 +12,7 @@ namespace gltxt
 {
     struct FontLoader
     {
-        static Font* LoadFontFromFile(const std::string& path, int pixelHeight);
+        static Font* LoadFontFromFile(const char* path, int pixelHeight);
         static Font* LoadFontFromMemory(const unsigned char* data, size_t count, int pixelHeight);
     };
 
@@ -46,7 +38,7 @@ namespace gltxt
         Internal::_prepareRender(viewProjMat);
     }
 
-    void LoadFontFromFile(const std::string& name, const std::string& path, int pixelHeight)
+    void LoadFontFromFile(const char* name, const char* path, int pixelHeight)
     {
         if (_fonts.find(name) != _fonts.end())
             return;
@@ -58,7 +50,7 @@ namespace gltxt
     }
     
 
-    void LoadFontFromMemory(const std::string& name, const unsigned char* data, size_t count, int pixelHeight)
+    void LoadFontFromMemory(const char* name, const unsigned char* data, size_t count, int pixelHeight)
     {
         if (_fonts.find(name) != _fonts.end())
             return;
@@ -69,7 +61,7 @@ namespace gltxt
             _fonts[name] = newFont;
     }
 
-    Label CreateLabelFromFont(const std::string& txt, const std::string& fontname)
+    Label CreateLabelFromFont(const char* txt, const char* fontname)
     {
         if (_fonts.find(fontname) == _fonts.end())
         {
@@ -86,8 +78,8 @@ namespace gltxt
         int fontW = 0, fontH = 0;
         font->GetTexSize(fontW, fontH);
         float pixelSize[2] = {0.f, 0.f};
-
-        for (int i = 0; i < txt.size(); ++i)
+        size_t strSize = strlen(txt);
+        for (int i = 0; i < strSize; ++i)
         {
             const Character& character = font->operator[](txt[i]);
 
@@ -127,11 +119,11 @@ namespace gltxt
         }
 
         Mesh* mesh = new Mesh();
-        mesh->InitFromVertices(vertices, indices);
+        Internal::_initMeshFromVertices(mesh, vertices.data(), vertices.size(), indices.data(), indices.size());
         return Label(font, mesh, pixelSize);
     }
 
-    Font* FontLoader::LoadFontFromFile(const std::string& path, int pixelHeight)
+    Font* FontLoader::LoadFontFromFile(const char* path, int pixelHeight)
         {
             std::basic_fstream<unsigned char> fontFile(path, std::fstream::in | std::fstream::binary | std::ios::ate);
             if (!fontFile.is_open())
@@ -183,6 +175,7 @@ namespace gltxt
             
             int xOffset = 0, yOffset = 0;
             
+            Character characters[128];
 
             for (int i = 0; i < 128; ++i)
             {
@@ -206,11 +199,12 @@ namespace gltxt
                 assert(yPos < height);
                 stbtt_MakeGlyphBitmap(&fInfo, bitmap + byteOffset, w, h, width, scale, scale, glyph);
                 
-                Character newChar{i, advance * scale, leftSideBearing * scale, xPos, yPos, CharBoundingBox{x0, y0, x1, y1}};
-                newFont->AddCharacter(newChar);
+                characters[i] = {i, advance * scale, leftSideBearing * scale, xPos, yPos, CharBoundingBox{x0, y0, x1, y1}};
 
                 xOffset += w + 4;
             }
+
+            newFont->SetCharacterSet(&characters[0], 128);
 
             newFont->mTexHandle = Internal::_loadFontTexture(bitmap, width, height);
             stbtt_FreeBitmap(bitmap, NULL);

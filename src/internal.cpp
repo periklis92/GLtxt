@@ -1,6 +1,6 @@
 #include "Internal.h"
 
-#include <cstddef>
+#include <stddef.h>
 #include <gltxt/mesh.h>
 #include <gltxt/font.h>
 #include "gl.h"
@@ -132,15 +132,15 @@ namespace gltxt
         glUniformMatrix4fv(_VPLoc, 1, GL_FALSE, viewProjMat);
     }
 
-    void Internal::_initMeshFromVertices(Mesh& mesh, const Vertex* vertices, int numVertices, const unsigned int* indices, int numIndices)
+    void Internal::_initMeshFromVertices(Mesh* mesh, const Vertex* vertices, int numVertices, const unsigned int* indices, int numIndices)
     {
-        mesh.mNumIndices = numIndices;
-        glGenVertexArrays(1, &mesh.mVertexArray);
-        glGenBuffers(1, &mesh.mVertexBuffer);
-        glGenBuffers(1, &mesh.mElementBuffer);
-        glBindVertexArray(mesh.mVertexArray);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.mVertexBuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.mElementBuffer);
+        mesh->mNumIndices = numIndices;
+        glGenVertexArrays(1, &mesh->mVertexArray);
+        glGenBuffers(1, &mesh->mVertexBuffer);
+        glGenBuffers(1, &mesh->mElementBuffer);
+        glBindVertexArray(mesh->mVertexArray);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->mVertexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->mElementBuffer);
         glEnableVertexAttribArray(_PosLoc);
         glEnableVertexAttribArray(_UVLoc);
 

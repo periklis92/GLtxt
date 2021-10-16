@@ -22,5 +22,6 @@ namespace gltxt
         CharBoundingBox BoundingBox;
 
         Character(int code, float advanceWidth, float leftSideBearing, int x, int y, CharBoundingBox boundingBox);
+        Character();
     };
 }

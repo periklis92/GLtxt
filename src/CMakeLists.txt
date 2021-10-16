@@ -1,12 +1,12 @@
 find_package(OpenGL REQUIRED)
 
-add_library(    gltxt ${GLTXT_LIBRARY_TYPE}
+add_library(    gltxt
                 "${CMAKE_SOURCE_DIR}/include/gltxt/character.h"
                 "${CMAKE_SOURCE_DIR}/include/gltxt/font.h"
                 "${CMAKE_SOURCE_DIR}/include/gltxt/gltxt.h"
                 "${CMAKE_SOURCE_DIR}/include/gltxt/label.h"
                 "${CMAKE_SOURCE_DIR}/include/gltxt/mesh.h"
-                gltxt.cpp character.cpp font.cpp mesh.cpp
+                gltxt.cpp character.cpp font.cpp
                 internal.h internal.cpp label.cpp)
 
 target_include_directories( gltxt PUBLIC

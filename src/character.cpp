@@ -9,4 +9,7 @@ namespace gltxt
     Character::Character(int code, float advanceWidth, float leftSideBearing, int x, int y, CharBoundingBox boundingBox)
         :Code(code), AdvanceWidth(advanceWidth), LeftSideBearing(leftSideBearing), BoundingBox(boundingBox),
         X(x), Y(y) { }
+
+    Character::Character()
+        :Character(-1, 0, 0, 0, 0, {0, 0, 0, 0}) { }
 }

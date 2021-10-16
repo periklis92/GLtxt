@@ -1,10 +1,7 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <functional>
-
 #include <gltxt/character.h>
+
 
 namespace gltxt
 {
@@ -19,7 +16,7 @@ namespace gltxt
     private:
         Font();
         Font(int ascent, int descent, int lineGap);
-        void AddCharacter(Character character);
+        void SetCharacterSet(Character* character, int numCharacters);
         
         friend struct FontLoader;
         friend class Mesh;
@@ -29,7 +26,8 @@ namespace gltxt
         unsigned int mTexHandle{0};
         int mAscent, mDescent, mLineGap;
         int mTexWidth, mTexHeight;
-        std::vector<Character> mCharacters;
+        Character* mCharacters;
+        int mNumCharacters;
 
     public:
         bool operator==(const Font& other)
