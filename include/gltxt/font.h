@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 
 #include <gltxt/character.h>
 
 namespace gltxt
 {
-
     class Font
     {
     public:
@@ -16,23 +16,26 @@ namespace gltxt
 
         void GetTexSize(int& width, int& height) const;
         unsigned int GetTexHandle() const;
-
-        friend class Mesh;
     private:
         Font();
         Font(int ascent, int descent, int lineGap);
         void AddCharacter(Character character);
-
-    public:
-        static Font LoadFontFromFile(const std::string& path, int pixelHeight = 14);
-        static Font LoadFontFromMemory(const unsigned char* data, size_t count, int pixelHeight = 14);
-
-    public:
-        unsigned int mTexHandle{0};
-
+        
+        friend struct FontLoader;
+        friend class Mesh;
+        friend struct Internal;
+        
     private:
+        unsigned int mTexHandle{0};
         int mAscent, mDescent, mLineGap;
         int mTexWidth, mTexHeight;
         std::vector<Character> mCharacters;
-    };
+
+    public:
+        bool operator==(const Font& other)
+        {
+            return mTexHandle == other.mTexHandle && mTexHeight == other.mTexHeight && mTexWidth == other.mTexWidth
+                && mAscent == other.mAscent && mDescent == other.mDescent && mLineGap == other.mLineGap;
+        }
+    };    
 }
